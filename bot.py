@@ -4,6 +4,8 @@ from discord import Guild, TextChannel, Message
 from discord.ext import commands
 from typing import Optional
 
+from drink_list import DrinkList
+
 GUILD_ID = 888527538710777876
 CHANNEL_ID = 888531559861321738
 MESSAGE_ID = 888535656542928906
@@ -15,12 +17,19 @@ class Bot(commands.Bot):
         super().__init__(command_prefix='/')
         self.guild: Optional[Guild] = None
         self.channel: Optional[TextChannel] = None
-        self.message: Optional[Message] = None
+        self.drink_list: Optional[DrinkList] = None
+
+        self.remove_command('help')
+        self.load_extension('cogs.drinks')
+        self.load_extension('cogs.utils')
 
     async def on_ready(self) -> None:
-        self.guild: Guild = self.get_guild(GUILD_ID)
-        self.channel: TextChannel = self.guild.get_channel(CHANNEL_ID)
-        self.message: Message = await self.channel.fetch_message(MESSAGE_ID)
+        self.guild = self.get_guild(GUILD_ID)
+        self.channel = self.guild.get_channel(CHANNEL_ID)
+
+        self.drink_list = DrinkList(
+            await self.channel.fetch_message(MESSAGE_ID)
+        )
 
     def run(self):
         super().run(dotenv.dotenv_values('.env').get('TOKEN'))
