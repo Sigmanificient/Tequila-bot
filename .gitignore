@@ -1,0 +1,9 @@
+# PyCharm Configuration Files
+.idea
+
+# Python Environment
+__pycache__
+venv
+
+# Bot environments variables
+.env
