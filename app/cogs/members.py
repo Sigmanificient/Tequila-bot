@@ -4,22 +4,23 @@ from discord import TextChannel
 from discord.ext import commands
 from discord.ext.commands import Context, CommandError
 
+from app.bot import Bot
 from app.classes.members_list import MemberList
 from app.exceptions import MemberAlreadyExists, MemberNotFound
 
-CHANNEL_ID = 888563799701991435
-MESSAGE_ID = 888770216480366632
-SALARIED_ROLE_ID = 888527962935296091
-PDG_ROLE_ID = 888527789794422784
+CHANNEL_ID: int = 888563799701991435
+MESSAGE_ID: int = 888770216480366632
+SALARIED_ROLE_ID: int = 888527962935296091
+PDG_ROLE_ID: int = 888527789794422784
 
 
 class MembersCog(commands.Cog):
     """A simple commands cog template."""
 
-    def __init__(self, client):
+    def __init__(self, client: Bot):
         """Link to bot instance."""
         self.name = 'Gestion Members'
-        self.client = client
+        self.client: Bot = client
         self.channel: Optional[TextChannel] = None
         self.manager = None
 
@@ -36,7 +37,7 @@ class MembersCog(commands.Cog):
         description="Ajoute une personne dans la liste des adhérents"
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def add_people_command(self, ctx: Context, person_name):
+    async def add_people_command(self, ctx: Context, person_name: str):
         await ctx.message.delete()
         await self.manager.add(person_name, 'people')
         await ctx.send('Ajouté!', delete_after=2)
@@ -46,7 +47,7 @@ class MembersCog(commands.Cog):
         description="Ajoute une entreprise dans la liste des adhérents"
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def add_company_command(self, ctx, company_name):
+    async def add_company_command(self, ctx: Context, company_name: str):
         await ctx.message.delete()
         await self.manager.add(company_name, 'company')
         await ctx.send('Ajouté!', delete_after=2)
@@ -56,7 +57,7 @@ class MembersCog(commands.Cog):
         description="Retire la personne donnée de la liste des adhérents"
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def remove_people_command(self, ctx, company_name):
+    async def remove_people_command(self, ctx: Context, company_name: str):
         await ctx.message.delete()
         await self.manager.remove(company_name, 'people')
         await ctx.send('Retiré!', delete_after=2)
@@ -66,7 +67,7 @@ class MembersCog(commands.Cog):
         description="Retire l'entreprise donnée de la liste des adhérents"
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def remove_company_command(self, ctx, company_name):
+    async def remove_company_command(self, ctx: Context, company_name: str):
         await ctx.message.delete()
         await self.manager.remove(company_name, 'company')
         await ctx.send('Retiré!', delete_after=2)
@@ -76,7 +77,7 @@ class MembersCog(commands.Cog):
         description="Met à jour la description de la liste des adherents."
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def set_drink_list_description(self, ctx, *, message):
+    async def set_drink_list_description(self, ctx: Context, *, message: str):
         with open(
             "assets/members_description.txt",
             'w', encoding='utf-8'
