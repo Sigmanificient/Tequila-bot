@@ -9,6 +9,8 @@ from app.exceptions import DrinkAlreadyExists, DrinkNotFound
 
 CHANNEL_ID = 888531559861321738
 MESSAGE_ID = 888535656542928906
+SALARIED_ROLE_ID = 888527962935296091
+PDG_ROLE_ID = 888527789794422784
 
 
 class DrinksCog(commands.Cog):
@@ -16,6 +18,7 @@ class DrinksCog(commands.Cog):
 
     def __init__(self, client):
         """Link to bot instance."""
+        self.name = 'Gestion Boisson'
         self.client = client
         self.channel: Optional[TextChannel] = None
         self.drink_list: Optional[DrinkList] = None
@@ -32,6 +35,7 @@ class DrinksCog(commands.Cog):
         name="create",
         description="Créer une nouvelle boisson",
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def create_command(self, ctx: Context, drink) -> None:
         await ctx.message.delete()
         await self.drink_list.create(drink)
@@ -45,6 +49,7 @@ class DrinksCog(commands.Cog):
         name="add",
         description="Incrémente le compteur d' une boisson"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def add_command(self, ctx: Context, drink, n=1) -> None:
         await ctx.message.delete()
         await self.drink_list.add(drink, n)
@@ -58,6 +63,7 @@ class DrinksCog(commands.Cog):
         name="delete",
         description="Retire un boisson de la liste"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def delete_command(self, ctx: Context, drink) -> None:
         await ctx.message.delete()
         await self.drink_list.delete(drink)
@@ -69,8 +75,9 @@ class DrinksCog(commands.Cog):
 
     @commands.command(
         name="remove",
-        description="Décrémente le compteur d' une boisson !"
+        description="Décrémente le compteur d' une boisson"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def remove_command(self, ctx: Context, drink, n=1):
         await ctx.message.delete()
         await self.drink_list.remove(drink, n)
@@ -79,6 +86,21 @@ class DrinksCog(commands.Cog):
             f">>> {self.drink_list.flatten()}",
             delete_after=3
         )
+
+    @commands.command(
+        name="desc-1",
+        description="Met à jour la description de la liste de boissons."
+    )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
+    async def set_drink_list_description(self, ctx, *, message):
+        with open(
+            "assets/drinklist_description.txt",
+            'w', encoding='utf-8'
+        ) as f:
+            f.write(message)
+
+        await ctx.send(f"Description mise à jour\n>>> {message}")
+        await self.drink_list.update()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, exc: CommandError):

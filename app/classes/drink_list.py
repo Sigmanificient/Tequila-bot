@@ -1,35 +1,32 @@
+import discord
+
 from app.exceptions import DrinkAlreadyExists, DrinkNotFound
 from app.utils import word_capitalize
 from app.classes.abc.message_manager import MessageManager
-
-
-def get_int(string):
-    return int(''.join(ch for ch in string if ch.isdigit()))
-
-
-def parse_from_message(content):
-    lines = content.splitlines()
-
-    d = {}
-    for line in lines[1:]:
-        line_elements = line.split('`')
-        d[word_capitalize(line_elements[1])] = get_int(line_elements[2])
-
-    return d
 
 
 class DrinkList(MessageManager):
 
     def __init__(self, message):
         self.drink_list_message = message
-        self.drink_list = parse_from_message(message.content)
+        self.drink_list = parse_from_message(message.embeds[0].description)
 
     async def update(self):
-        await self.drink_list_message.edit(
-            content='**Liste des boissons:**\n' + '\n'.join(
-                f"- `{word_capitalize(key)}` **x{val:,}**"
-                for key, val in self.drink_list.items()
+        drink_list_embed = discord.Embed(
+            title="Liste des boissons",
+            description=(
+                get_embed_description() + '\n'
+                + r'\_' * 32 + '\n\n'
+                + '\n'.join(
+                    f"- `{word_capitalize(key)}` **x{val:,}**"
+                    for key, val in self.drink_list.items()
+                )
             )
+        )
+
+        await self.drink_list_message.edit(
+            content='',
+            embed=drink_list_embed
         )
 
     async def create(self, drink_name):
@@ -72,3 +69,24 @@ class DrinkList(MessageManager):
         return '\n'.join(
             sorted(f'- `{d}`x `{v:,}`' for d, v in self.drink_list.items())
         )
+
+
+def get_embed_description() -> str:
+    with open('assets/drinklist_description.txt', encoding='utf-8') as f:
+        return f.read()
+
+
+def get_int(string):
+    return int(''.join(ch for ch in string if ch.isdigit()))
+
+
+def parse_from_message(content):
+    lines = content.splitlines()
+    skip = lines.index(r'\_' * 32)
+
+    d = {}
+    for line in lines[skip + 2:]:
+        line_elements = line.split('`')
+        d[word_capitalize(line_elements[1])] = get_int(line_elements[2])
+
+    return d

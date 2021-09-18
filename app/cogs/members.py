@@ -4,19 +4,21 @@ from discord import TextChannel
 from discord.ext import commands
 from discord.ext.commands import Context, CommandError
 
-from app.exceptions import MemberAlreadyExists, MemberNotFound
 from app.classes.members_list import MemberList
+from app.exceptions import MemberAlreadyExists, MemberNotFound
 
 CHANNEL_ID = 888563799701991435
-MESSAGE_ID_PEOPLE = 888726639503114251
-MESSAGE_ID_COMPANY = 888726640614576129
+MESSAGE_ID = 888770216480366632
+SALARIED_ROLE_ID = 888527962935296091
+PDG_ROLE_ID = 888527789794422784
 
 
-class DrinksCog(commands.Cog):
+class MembersCog(commands.Cog):
     """A simple commands cog template."""
 
     def __init__(self, client):
         """Link to bot instance."""
+        self.name = 'Gestion Members'
         self.client = client
         self.channel: Optional[TextChannel] = None
         self.manager = None
@@ -26,14 +28,14 @@ class DrinksCog(commands.Cog):
         self.channel = self.client.guild.get_channel(CHANNEL_ID)
 
         self.manager = MemberList(
-            await self.channel.fetch_message(MESSAGE_ID_PEOPLE),
-            await self.channel.fetch_message(MESSAGE_ID_COMPANY)
+            await self.channel.fetch_message(MESSAGE_ID),
         )
 
     @commands.command(
         name='addpeople',
         description="Ajoute une personne dans la liste des adhérents"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def add_people_command(self, ctx: Context, person_name):
         await ctx.message.delete()
         await self.manager.add(person_name, 'people')
@@ -43,6 +45,7 @@ class DrinksCog(commands.Cog):
         name='addcomp',
         description="Ajoute une entreprise dans la liste des adhérents"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def add_company_command(self, ctx, company_name):
         await ctx.message.delete()
         await self.manager.add(company_name, 'company')
@@ -52,6 +55,7 @@ class DrinksCog(commands.Cog):
         name='removepeople',
         description="Retire la personne donnée de la liste des adhérents"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def remove_people_command(self, ctx, company_name):
         await ctx.message.delete()
         await self.manager.remove(company_name, 'people')
@@ -61,10 +65,26 @@ class DrinksCog(commands.Cog):
         name='removecomp',
         description="Retire l'entreprise donnée de la liste des adhérents"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def remove_company_command(self, ctx, company_name):
         await ctx.message.delete()
         await self.manager.remove(company_name, 'company')
         await ctx.send('Retiré!', delete_after=2)
+
+    @commands.command(
+        name="desc-2",
+        description="Met à jour la description de la liste des adherents."
+    )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
+    async def set_drink_list_description(self, ctx, *, message):
+        with open(
+            "assets/members_description.txt",
+            'w', encoding='utf-8'
+        ) as f:
+            f.write(message)
+
+        await ctx.send(f"Description mise à jour\n>>> {message}")
+        await self.manager.update()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, exc: CommandError):
@@ -85,4 +105,4 @@ class DrinksCog(commands.Cog):
 
 
 def setup(client) -> NoReturn:
-    client.add_cog(DrinksCog(client))
+    client.add_cog(MembersCog(client))

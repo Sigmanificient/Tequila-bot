@@ -1,0 +1,3 @@
+Ajoutez les adhésions à l'aide des commandes /addpeople /addcomp.
+N'oubliez pas de tenir à jouer le GDoc, notamment pour les dates.
+Je vérifierais une fois par semaine qui est a jour ou non

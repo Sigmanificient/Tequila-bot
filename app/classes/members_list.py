@@ -1,33 +1,35 @@
+import discord
+
 from app.exceptions import MemberAlreadyExists, MemberNotFound
 from app.utils import word_capitalize
 from app.classes.abc.message_manager import MessageManager
 
 
-def parse_from_message(content):
-    return content.splitlines()[1:]
-
-
 class MemberList(MessageManager):
 
-    def __init__(self, people_message, company_message):
-        self.people_message = people_message
-        self.company_message = company_message
+    def __init__(self, message):
+        self.message = message
+        fields = message.embeds[0].fields
 
         self.member_list = {
-            'people': parse_from_message(people_message.content),
-            'company': parse_from_message(company_message.content)
+            'people': fields[0].value.splitlines(),
+            'company': fields[1].value.splitlines()
         }
 
     async def update(self):
-        await self.people_message.edit(
-            content='> __Adhérents :__\n' + '\n'.join(
-                map(str.capitalize, self.member_list['people'])
-            )
-        )
-
-        await self.company_message.edit(
-            content='> __Entreprises :__\n' + '\n'.join(
-                map(str.capitalize, self.member_list['company'])
+        await self.message.edit(
+            embed=discord.Embed(
+                description=get_embed_description()
+            ).add_field(
+                name='__Adhérents__:',
+                value='\n'.join(
+                    map(str.capitalize, self.member_list['people'])
+                )
+            ).add_field(
+                name='__Entreprises__:',
+                value='\n'.join(
+                    map(str.capitalize, self.member_list['company'])
+                )
             )
         )
 
@@ -48,3 +50,8 @@ class MemberList(MessageManager):
 
         self.member_list[member_type].remove(member_name)
         await self.update()
+
+
+def get_embed_description() -> str:
+    with open('assets/members_description.txt', encoding='utf-8') as f:
+        return f.read()
