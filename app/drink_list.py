@@ -1,4 +1,4 @@
-from exceptions import DrinkAlreadyExists, DrinkNotFound
+from app.exceptions import DrinkAlreadyExists, DrinkNotFound
 
 
 def get_int(string):
@@ -11,7 +11,7 @@ def parse_from_message(content):
     d = {}
     for line in lines[1:]:
         line_elements = line.split('`')
-        d[line_elements[1]] = get_int(line_elements[2])
+        d[line_elements[1].capitalize()] = get_int(line_elements[2])
 
     return d
 
@@ -25,12 +25,14 @@ class DrinkList:
     async def update(self):
         await self.drink_list_message.edit(
             content='**Liste des boissons:**\n' + '\n'.join(
-                f"- `{key}` **x{val:,}**"
+                f"- `{key.capitalize()}` **x{val:,}**"
                 for key, val in self.drink_list.items()
             )
         )
 
     async def create(self, drink_name):
+        drink_name = drink_name.capitalize()
+
         if drink_name in self.drink_list:
             raise DrinkAlreadyExists(drink_name)
 
@@ -38,6 +40,8 @@ class DrinkList:
         await self.update()
 
     async def add(self, drink_name, n=1):
+        drink_name = drink_name.capitalize()
+
         if drink_name not in self.drink_list:
             raise DrinkNotFound(drink_name)
 
@@ -45,6 +49,8 @@ class DrinkList:
         await self.update()
 
     async def remove(self, drink_name, n=1):
+        drink_name = drink_name.capitalize()
+
         if drink_name not in self.drink_list:
             raise DrinkNotFound(drink_name)
 
@@ -52,6 +58,8 @@ class DrinkList:
         await self.update()
 
     async def delete(self, drink_name):
+        drink_name = drink_name.capitalize()
+
         if drink_name not in self.drink_list:
             raise DrinkNotFound(drink_name)
 
