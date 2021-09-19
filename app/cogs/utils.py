@@ -82,7 +82,7 @@ class UtilsCog(commands.Cog):
                 ), inline=False
             )
 
-        await ctx.send(embed=help_embed)
+        await ctx.send(embed=help_embed, delete_after=10)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, exc: CommandError):

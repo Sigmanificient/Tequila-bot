@@ -78,13 +78,18 @@ class MembersCog(commands.Cog):
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def set_drink_list_description(self, ctx: Context, *, message: str):
+        await ctx.message.delete()
+
         with open(
             "assets/members_description.txt",
             'w', encoding='utf-8'
         ) as f:
             f.write(message)
 
-        await ctx.send(f"Description mise à jour\n>>> {message}")
+        await ctx.send(
+            f"Description mise à jour\n>>> {message}", delete_after=5
+        )
+
         await self.manager.update()
 
     @commands.Cog.listener()
