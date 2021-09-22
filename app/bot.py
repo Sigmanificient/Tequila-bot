@@ -1,17 +1,19 @@
 from typing import Optional, NoReturn, Tuple
 
 import dotenv
-from discord import Guild
+from discord import Guild, Activity, ActivityType
 from discord.ext import commands
 
 GUILD_ID: int = 888527538710777876
-LOADED_EXTENSIONS: Tuple[str, ...] = ('drinks', 'members', 'utils')
+LOADED_EXTENSIONS: Tuple[str, ...] = (
+    'drinks', 'members', 'utils', 'workers'
+)
 
 
 class Bot(commands.Bot):
 
     def __init__(self) -> None:
-        super().__init__(command_prefix='/')
+        super().__init__(command_prefix='//')
         self.guild: Optional[Guild] = None
 
         self.remove_command('help')
@@ -22,6 +24,13 @@ class Bot(commands.Bot):
     async def on_ready(self) -> None:
         self.guild = self.get_guild(GUILD_ID)
         print(self.user, 'is ready')
+
+        await self.change_presence(
+            activity=Activity(
+                type=ActivityType.watching,
+                name=f"{self.command_prefix}help"
+            )
+        )
 
     def run(self) -> NoReturn:
         super().run(dotenv.dotenv_values('.env').get('TOKEN'))
