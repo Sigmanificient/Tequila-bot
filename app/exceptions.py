@@ -1,4 +1,9 @@
-class DrinkError(Exception):
+class BotError(Exception):
+    """A custom exception class to wrap bot errors."""
+    pass
+
+
+class DrinkError(BotError):
     """An Base Exception for Drinks Errors."""
 
     def __init__(self, drink_name: str):
@@ -15,7 +20,7 @@ class DrinkNotFound(DrinkError):
     pass
 
 
-class MemberError(Exception):
+class MemberError(BotError):
     """An Base Exception for Member Errors."""
 
     def __init__(self, member_name: str, member_type: str):
@@ -30,4 +35,21 @@ class MemberAlreadyExists(MemberError):
 
 class MemberNotFound(MemberError):
     """Raised when a member with the given isn't found within the database."""
+    pass
+
+
+class EmployeeError(BotError):
+    """An Base Exception for Worker Errors."""
+
+    def __init__(self, employee_name: str):
+        self.employee_name = employee_name
+
+
+class EmployeeFound(EmployeeError):
+    """Raised when a worker is already working."""
+    pass
+
+
+class EmployeeNotFound(EmployeeError):
+    """Raised when a worker is not yet working."""
     pass
