@@ -1,6 +1,8 @@
 from time import time
 
 HALF_HOUR: int = 1800
+SALARIED_ROLE_ID: int = 888527962935296091
+PDG_ROLE_ID: int = 888527789794422784
 
 
 def word_capitalize(word: str) -> str:

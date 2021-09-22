@@ -7,11 +7,10 @@ from discord.ext.commands import Context, CommandError
 from app.bot import Bot
 from app.classes.members_list import MemberList
 from app.exceptions import MemberAlreadyExists, MemberNotFound
+from app.utils import SALARIED_ROLE_ID, PDG_ROLE_ID
 
 CHANNEL_ID: int = 888563799701991435
 MESSAGE_ID: int = 888770216480366632
-SALARIED_ROLE_ID: int = 888527962935296091
-PDG_ROLE_ID: int = 888527789794422784
 
 
 class MembersCog(commands.Cog):

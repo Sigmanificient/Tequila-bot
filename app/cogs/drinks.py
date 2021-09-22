@@ -6,11 +6,10 @@ from discord.ext.commands import Context, CommandError
 
 from app.classes.drink_list import DrinkList
 from app.exceptions import DrinkAlreadyExists, DrinkNotFound
+from app.utils import SALARIED_ROLE_ID, PDG_ROLE_ID
 
 CHANNEL_ID = 888531559861321738
 MESSAGE_ID = 888535656542928906
-SALARIED_ROLE_ID = 888527962935296091
-PDG_ROLE_ID = 888527789794422784
 
 
 class DrinksCog(commands.Cog):

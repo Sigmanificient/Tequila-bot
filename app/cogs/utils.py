@@ -90,6 +90,7 @@ class UtilsCog(commands.Cog):
         name="purge",
         description="Supprime X messages"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def purge_command(
             self, ctx: Context, limit: Optional[int] = None
     ) -> None:
@@ -104,10 +105,6 @@ class UtilsCog(commands.Cog):
             await ctx.send(
                 "> Seul les salariés ont le droit d' exécuter cette commande."
             )
-
-    @commands.command()
-    async def p(self, ctx):
-        await ctx.send('...')
 
 
 def setup(client: Bot) -> NoReturn:

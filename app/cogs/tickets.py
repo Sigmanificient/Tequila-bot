@@ -6,11 +6,10 @@ from discord.ext.commands import Context
 
 from app.bot import Bot
 from app.classes.pot import Pot
+from app.utils import SALARIED_ROLE_ID, PDG_ROLE_ID
 
 CHANNEL_ID: int = 889523568298307594
 MESSAGE_ID: int = 890313495030157313
-SALARIED_ROLE_ID: int = 888527962935296091
-PDG_ROLE_ID: int = 888527789794422784
 
 
 class TicketCog(commands.Cog):
@@ -37,6 +36,7 @@ class TicketCog(commands.Cog):
         name="vente",
         description="Ajoute le montant rapporté par la cagnotte"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def sell_command(self, ctx: Context, amount: int):
         await ctx.message.delete()
         await self.pot.add(amount)
@@ -46,6 +46,7 @@ class TicketCog(commands.Cog):
         name="erreur",
         description="Corrige une erreur sur la cagnotte"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def error_remove_command(self, ctx: Context, amount: int):
         await ctx.message.delete()
         await self.pot.correct(amount)
@@ -55,6 +56,7 @@ class TicketCog(commands.Cog):
         name="achat",
         description="Retire le montant utilisé depuis la cagnotte"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def buy_remove_command(self, ctx: Context, amount: int):
         await ctx.message.delete()
         await self.pot.remove(amount)

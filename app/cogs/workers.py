@@ -43,6 +43,7 @@ class WorkerCog(commands.Cog):
                 "et calculer le salaire"
         )
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def connect_command(self, ctx: Context):
         await ctx.message.delete()
         await self.manager.add(ctx.author.id)
@@ -52,6 +53,7 @@ class WorkerCog(commands.Cog):
         name='add30m',
         description="Ajoute 30m de salaire à la personne mentionnée"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def add_30m_command(self, ctx: Context, user: User = None, amount=1):
         await ctx.message.delete()
 
@@ -73,6 +75,7 @@ class WorkerCog(commands.Cog):
         name='remove30m',
         description="Retire 30m de salaire à la personne mentionnée"
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def remove_30m_command(
             self, ctx: Context, user: User = None, amount=1
     ):
@@ -96,6 +99,7 @@ class WorkerCog(commands.Cog):
         name='deco',
         description="Arrête le mode travail."
     )
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def disconnect(self, ctx: Context):
         await ctx.message.delete()
         await self.manager.remove(ctx.author.id)
@@ -130,6 +134,7 @@ class WorkerCog(commands.Cog):
         await self.manager.update()
 
     @commands.command(name="pay")
+    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def set_pay_command(self, ctx: Context, amount: int):
         await ctx.message.delete()
 
