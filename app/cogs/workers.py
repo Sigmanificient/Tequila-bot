@@ -15,7 +15,7 @@ SALARIED_ROLE_ID: int = 888527962935296091
 PDG_ROLE_ID: int = 888527789794422784
 
 
-class MembersCog(commands.Cog):
+class WorkerCog(commands.Cog):
     """A simple commands cog template."""
 
     def __init__(self, client: Bot):
@@ -154,4 +154,4 @@ class MembersCog(commands.Cog):
 
 
 def setup(client) -> NoReturn:
-    client.add_cog(MembersCog(client))
+    client.add_cog(WorkerCog(client))

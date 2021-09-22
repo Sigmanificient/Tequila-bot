@@ -6,7 +6,7 @@ from discord.ext import commands
 
 GUILD_ID: int = 888527538710777876
 LOADED_EXTENSIONS: Tuple[str, ...] = (
-    'drinks', 'members', 'utils', 'workers'
+    'drinks', 'members', 'utils', 'workers', 'tickets'
 )
 
 
