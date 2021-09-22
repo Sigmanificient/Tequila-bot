@@ -1,7 +1,7 @@
 import discord
 
 from app.exceptions import DrinkAlreadyExists, DrinkNotFound
-from app.utils import word_capitalize
+from app.utils import word_capitalize, get_int
 from app.classes.abc.message_manager import MessageManager
 
 
@@ -74,10 +74,6 @@ class DrinkList(MessageManager):
 def get_embed_description() -> str:
     with open('assets/drinklist_description.txt', encoding='utf-8') as f:
         return f.read()
-
-
-def get_int(string):
-    return int(''.join(ch for ch in string if ch.isdigit()))
 
 
 def parse_from_message(content):
