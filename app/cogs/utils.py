@@ -1,5 +1,5 @@
 from app.bot import Bot
-from typing import NoReturn
+from typing import NoReturn, Optional
 
 import discord
 import psutil
@@ -25,6 +25,7 @@ class UtilsCog(commands.Cog):
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def panel_info(self, ctx: Context):
+        await ctx.message.delete()
         mb: int = 1024 ** 2
 
         vm = psutil.virtual_memory()
@@ -68,6 +69,7 @@ class UtilsCog(commands.Cog):
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def help_command(self, ctx: Context):
+        await ctx.message.delete()
 
         help_embed = discord.Embed(
             description="Aide du TéquilaBot"
@@ -82,7 +84,17 @@ class UtilsCog(commands.Cog):
                 ), inline=False
             )
 
-        await ctx.send(embed=help_embed, delete_after=10)
+        await ctx.send(embed=help_embed, delete_after=60)
+
+    @commands.command(
+        name="purge",
+        description="Supprime X messages"
+    )
+    async def purge_command(
+            self, ctx: Context, limit: Optional[int] = None
+    ) -> None:
+        await ctx.channel.purge(limit=limit)
+        await ctx.send("> Purgé!", delete_after=5)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, exc: CommandError):
@@ -92,6 +104,10 @@ class UtilsCog(commands.Cog):
             await ctx.send(
                 "> Seul les salariés ont le droit d' exécuter cette commande."
             )
+
+    @commands.command()
+    async def p(self, ctx):
+        await ctx.send('...')
 
 
 def setup(client: Bot) -> NoReturn:
