@@ -7,3 +7,10 @@ venv
 
 # Bot environments variables
 .env
+
+# Backups
+bak
+
+
+# Bot archives
+.zip
