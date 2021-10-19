@@ -1,8 +1,10 @@
+import json
+import time
 import discord
 
 from app.classes.abc.message_manager import MessageManager
 from app.exceptions import EmployeeFound, EmployeeNotFound
-from app.utils import get_int, get_last_half_hour
+from app.utils import get_int, get_last_q_hour
 
 
 class WorkList(MessageManager):
@@ -12,7 +14,7 @@ class WorkList(MessageManager):
 
         fields = message.embeds[0].fields
 
-        self.paye_amount = 1200
+        self.paye_amount = 50
 
         self.work_list = parse_from_message(
             fields[0].value, 'Aucun employés actifs', ' || '
@@ -23,7 +25,7 @@ class WorkList(MessageManager):
         )
 
     async def update(self):
-        drink_list_embed = discord.Embed(
+        update_embed = discord.Embed(
             title="Travail",
             description=get_embed_description()
         ).add_field(
@@ -40,14 +42,20 @@ class WorkList(MessageManager):
             ) or 'Pas de salaires enregistré',
             inline=False
         ).add_field(
-            name='Tarif (30min)',
+            name='Tarif (15min)',
             value=f'> `${self.paye_amount:,}`'
         )
 
         await self.work_list_message.edit(
             content='',
-            embed=drink_list_embed
+            embed=update_embed
         )
+
+        print("generating backup...", end='')
+        with open(f"bak/{time.time():.0f}", 'w+') as f:
+            json.dump(update_embed.to_dict(), f, indent=4)
+
+            print('[OK]')
 
     async def update_salaries(self):
         for employee_name in list(self.work_list.keys()):
@@ -62,7 +70,7 @@ class WorkList(MessageManager):
         if worker in self.work_list:
             raise EmployeeFound(worker)
 
-        self.work_list[worker] = t or get_last_half_hour()
+        self.work_list[worker] = t or get_last_q_hour()
         await self.update()
 
     async def remove(self, worker):
