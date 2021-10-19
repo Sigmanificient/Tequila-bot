@@ -13,7 +13,7 @@ LOADED_EXTENSIONS: Tuple[str, ...] = (
 class Bot(commands.Bot):
 
     def __init__(self) -> None:
-        super().__init__(command_prefix='//')
+        super().__init__(command_prefix='/')
         self.guild: Optional[Guild] = None
 
         self.remove_command('help')
