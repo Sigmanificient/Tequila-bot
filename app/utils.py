@@ -1,6 +1,6 @@
 from time import time
 
-HALF_HOUR: int = 1800
+QUARTER_HOUR: int = 900
 SALARIED_ROLE_ID: int = 888527962935296091
 PDG_ROLE_ID: int = 888527789794422784
 
@@ -14,6 +14,6 @@ def get_int(string):
     return int(''.join(ch for ch in string if ch.isdigit()))
 
 
-def get_last_half_hour():
+def get_last_q_hour():
     current_sec = time()
-    return int(current_sec - (current_sec % HALF_HOUR))
+    return int(current_sec - (current_sec % QUARTER_HOUR))

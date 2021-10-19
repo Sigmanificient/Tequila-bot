@@ -50,11 +50,11 @@ class WorkerCog(commands.Cog):
         await ctx.send("> Mise au travail...", delete_after=3)
 
     @commands.command(
-        name='add30m',
-        description="Ajoute 30m de salaire à la personne mentionnée"
+        name='add15m',
+        description="Ajoute 15m de salaire à la personne mentionnée"
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def add_30m_command(self, ctx: Context, user: User = None, amount=1):
+    async def add_15m_command(self, ctx: Context, user: User = None, amount=1):
         await ctx.message.delete()
 
         if user is None:
@@ -72,11 +72,11 @@ class WorkerCog(commands.Cog):
         await ctx.send("> Ajouté", delete_after=3)
 
     @commands.command(
-        name='remove30m',
-        description="Retire 30m de salaire à la personne mentionnée"
+        name='remove15m',
+        description="Retire 15m de salaire à la personne mentionnée"
     )
     @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def remove_30m_command(
+    async def remove_15m_command(
             self, ctx: Context, user: User = None, amount=1
     ):
         await ctx.message.delete()
@@ -122,8 +122,8 @@ class WorkerCog(commands.Cog):
         await ctx.message.delete()
 
         with open(
-            "assets/worklist_description.txt",
-            'w', encoding='utf-8'
+                "assets/worklist_description.txt",
+                'w', encoding='utf-8'
         ) as f:
             f.write(message)
 
