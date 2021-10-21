@@ -109,5 +109,4 @@ class MembersCog(commands.Cog):
             )
 
 
-def setup(client) -> NoReturn:
-    client.add_cog(MembersCog(client))
+setup = MembersCog
