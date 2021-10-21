@@ -19,9 +19,11 @@ class Bot(Client):
         for ext in LOADED_EXTENSIONS:
             self.load_cog(f'app.cogs.{ext}')
 
+    @Client.event
     async def on_ready(self) -> None:
-        self.guild = self.get_guild(GUILD_ID)
-        print(self.user, 'is ready')
+        self.guild = await self.get_guild(GUILD_ID)
+        print("-> Loading guild:", self.guild.name)
+        print(self.bot, 'is ready')
 
         # await self.change_presence(
         #    activity=Activity(
