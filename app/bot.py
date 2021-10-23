@@ -1,7 +1,7 @@
 from typing import Optional, NoReturn, Tuple
 
 import dotenv
-from discord import Guild, Activity, ActivityType
+from discord import Guild, Activity, ActivityType, Intents
 from discord.ext import commands
 
 GUILD_ID: int = 888527538710777876
@@ -13,7 +13,7 @@ LOADED_EXTENSIONS: Tuple[str, ...] = (
 class Bot(commands.Bot):
 
     def __init__(self) -> None:
-        super().__init__(command_prefix='/')
+        super().__init__(command_prefix='/', intents=Intents.all())
         self.guild: Optional[Guild] = None
 
         self.remove_command('help')
