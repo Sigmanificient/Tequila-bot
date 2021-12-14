@@ -15,7 +15,7 @@ class WorkList(MessageManager):
 
         fields = message.embeds[0].fields
 
-        self.paye_amount = 50
+        self.paye_amount = 100
 
         self.work_list = parse_from_message(
             fields[0].value, 'Aucun employés actifs', ' || '
