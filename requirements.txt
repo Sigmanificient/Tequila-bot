@@ -1,4 +1,4 @@
-python-dotenv~=0.19.1
+python-dotenv~=0.19.2
 discord~=1.7.3
-psutil~=5.8.0
-pincer<=0.9.3
+psutil~=5.9.0
+pincer<=0.15.3

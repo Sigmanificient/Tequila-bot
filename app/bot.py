@@ -24,10 +24,3 @@ class Bot(Client):
         self.guild = await self.get_guild(GUILD_ID)
         print("-> Loading guild:", self.guild.name)
         print(self.bot, 'is ready')
-
-        # await self.change_presence(
-        #    activity=Activity(
-        #        type=ActivityType.watching,
-        #        name=f"{self.command_prefix}help"
-        #    )
-        # )

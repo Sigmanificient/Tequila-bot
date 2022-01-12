@@ -10,7 +10,7 @@ from app.exceptions import EmployeeFound, EmployeeNotFound
 from app.tasks.update_salaries import UpdateSalariesTask
 
 CHANNEL_ID: int = 888821011989012551
-MESSAGE_ID: int = 890274291969572874
+MESSAGE_ID: int = 920438493321248769
 SALARIED_ROLE_ID: int = 888527962935296091
 PDG_ROLE_ID: int = 888527789794422784
 

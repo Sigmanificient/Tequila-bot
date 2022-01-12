@@ -11,10 +11,11 @@ class WorkList(MessageManager):
 
     def __init__(self, message):
         self.work_list_message = message
+        self.regen_channel = message.channel
 
         fields = message.embeds[0].fields
 
-        self.paye_amount = 50
+        self.paye_amount = 100
 
         self.work_list = parse_from_message(
             fields[0].value, 'Aucun employés actifs', ' || '
@@ -22,6 +23,11 @@ class WorkList(MessageManager):
 
         self.payees = parse_from_message(
             fields[1].value, 'Pas de salaires enregistré', '$'
+        )
+
+    async def regenerate(self, update_embed):
+        self.work_list_message = await self.regen_channel.send(
+            embed=update_embed
         )
 
     async def update(self):
@@ -46,10 +52,13 @@ class WorkList(MessageManager):
             value=f'> `${self.paye_amount:,}`'
         )
 
-        await self.work_list_message.edit(
-            content='',
-            embed=update_embed
-        )
+        try:
+            await self.work_list_message.edit(
+                content='',
+                embed=update_embed
+            )
+        except discord.errors.NotFound:
+            await self.regenerate(update_embed)
 
         print("generating backup...", end='')
         with open(f"bak/{time.time():.0f}", 'w+') as f:
