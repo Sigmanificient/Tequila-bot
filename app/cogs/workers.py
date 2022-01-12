@@ -2,9 +2,8 @@ import asyncio
 from time import time
 from typing import Optional
 
-from discord import TextChannel, User
-from discord.ext import commands
-from discord.ext.commands import Context, CommandError
+from pincer import Client, command
+from pincer.objects import TextChannel, MessageContext, InteractionFlags, User
 from pincer.utils import TaskScheduler
 
 from app.bot import Bot
@@ -19,7 +18,7 @@ SALARIED_ROLE_ID: int = 888527962935296091
 PDG_ROLE_ID: int = 888527789794422784
 
 
-class WorkerCog(commands.Cog):
+class WorkerCog:
     """A simple commands cog template."""
 
     def __init__(self, client: Bot):
@@ -37,7 +36,7 @@ class WorkerCog(commands.Cog):
         self.update_salaries = task.loop(minutes=QUARTER_HOUR)(update_salaries_cls.update_salaries)
         self.update_salaries.start()
 
-    @commands.Cog.listener()
+    @Client.event
     async def on_ready(self):
         self.channel = self.client.guild.get_channel(CHANNEL_ID)
 
@@ -47,26 +46,25 @@ class WorkerCog(commands.Cog):
 
         await self.manager.update()
 
-    @commands.command(
+    @command(
         name='co',
         description=(
                 "Démarre le mode et travail pour garder le temps "
                 "et calculer le salaire"
         )
     )
-    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def connect_command(self, ctx: Context):
-        await ctx.message.delete()
+    async def connect_command(self, ctx: MessageContext):
         await self.manager.add(ctx.author.id)
-        await ctx.send("> Mise au travail...", delete_after=3)
+        return (
+            "> Mise au travail...",
+            InteractionFlags.EPHEMERAL
+        )
 
-    @commands.command(
+    @command(
         name='add15m',
         description="Ajoute 15m de salaire à la personne mentionnée"
     )
-    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def add_15m_command(self, ctx: Context, user: User = None, amount=1):
-        await ctx.message.delete()
+    async def add_15m_command(self, ctx: MessageContext, user: User = None, amount=1):
 
         if user is None:
             user = ctx.author
@@ -82,16 +80,13 @@ class WorkerCog(commands.Cog):
         await self.manager.update()
         await ctx.send("> Ajouté", delete_after=3)
 
-    @commands.command(
+    @command(
         name='remove15m',
         description="Retire 15m de salaire à la personne mentionnée"
     )
-    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
     async def remove_15m_command(
-            self, ctx: Context, user: User = None, amount=1
+            self, ctx: MessageContext, user: User = None, amount=1
     ):
-        await ctx.message.delete()
-
         if user is None:
             user = ctx.author
 
@@ -104,69 +99,55 @@ class WorkerCog(commands.Cog):
             self.manager.payees.pop(user.id)
 
         await self.manager.update()
-        await ctx.send("> Retiré", delete_after=3)
+        return (
+            "> Retiré",
+            InteractionFlags.EPHEMERAL
+        )
 
-    @commands.command(
+    @command(
         name='deco',
         description="Arrête le mode travail."
     )
-    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def disconnect(self, ctx: Context):
-        await ctx.message.delete()
+    async def disconnect(self, ctx: MessageContext):
         await self.manager.remove(ctx.author.id)
-        await ctx.send('> Arrêt', delete_after=3)
+        return (
+            '> Arrêt',
+            InteractionFlags.EPHEMERAL
+        )
 
-    @commands.command(
+    @command(
         name='wipe',
         description="Supprime la liste des salaries à payer."
     )
-    async def wipe(self, ctx: Context):
+    async def wipe(self):
         await self.manager.wipe()
-        await ctx.send("> Wiped!")
+        return "> Wiped!"
 
-    @commands.command(
+    @command(
         name="desc-3",
         description="Met à jour la description de la liste de travail."
     )
-    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def set_drink_list_description(self, ctx, *, message):
-        await ctx.message.delete()
-
+    async def set_drink_list_description(self, ctx, message):
         with open(
                 "assets/worklist_description.txt",
                 'w', encoding='utf-8'
         ) as f:
             f.write(message)
 
-        await ctx.send(
-            f"Description mise à jour\n>>> {message}", delete_after=5
+        await self.manager.update()
+        return (
+            f"Description mise à jour\n>>> {message}",
+            InteractionFlags.EPHEMERAL
         )
 
-        await self.manager.update()
-
-    @commands.command(name="pay")
-    @commands.has_any_role(SALARIED_ROLE_ID, PDG_ROLE_ID)
-    async def set_pay_command(self, ctx: Context, amount: int):
-        await ctx.message.delete()
-
+    @command(name="pay")
+    async def set_pay_command(self, amount: int):
         self.manager.paye_amount = amount
         await self.manager.update()
-        await ctx.send(
-            f"La paye est maintenant de `${amount:,}`", delete_after=5
+
+        return (
+            f"La paye est maintenant de `${amount:,}`",
+            InteractionFlags.EPHEMERAL
         )
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx: Context, exc: CommandError):
-        if not isinstance(exc, commands.errors.CommandInvokeError):
-            return
-
-        if isinstance(exc.original, EmployeeNotFound):
-            await ctx.send(
-                "Vous n' êtes pas en train de travailler"
-            )
-
-        if isinstance(exc.original, EmployeeFound):
-            await ctx.send("Vous êtes déjà dans la liste des employées actifs.")
-
 
 setup = WorkerCog
