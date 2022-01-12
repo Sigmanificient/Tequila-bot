@@ -1,6 +1,6 @@
 import asyncio
 from time import time
-from typing import NoReturn, Optional
+from typing import Optional
 
 from discord import TextChannel, User
 from discord.ext import commands
@@ -10,7 +10,6 @@ from pincer.utils import TaskScheduler
 from app.bot import Bot
 from app.classes.work_list import WorkList
 from app.exceptions import EmployeeFound, EmployeeNotFound
-from app.tasks import update_salaries
 from app.tasks.update_salaries import UpdateSalariesTask
 from app.utils import QUARTER_HOUR, get_last_q_hour
 
@@ -32,7 +31,10 @@ class WorkerCog(commands.Cog):
 
         task = TaskScheduler(self.client)
         await asyncio.sleep((get_last_q_hour() + QUARTER_HOUR) - time())
-        self.update_salaries = task.loop(minutes=QUARTER_HOUR)(update_salaries)
+
+        update_salaries_cls = UpdateSalariesTask(self.manager)
+
+        self.update_salaries = task.loop(minutes=QUARTER_HOUR)(update_salaries_cls.update_salaries)
         self.update_salaries.start()
 
     @commands.Cog.listener()
