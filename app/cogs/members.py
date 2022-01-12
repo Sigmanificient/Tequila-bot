@@ -5,7 +5,6 @@ from pincer.objects import TextChannel, InteractionFlags
 
 from app.bot import Bot
 from app.classes.members_list import MemberList
-from app.exceptions import MemberAlreadyExists, MemberNotFound, BotError
 
 CHANNEL_ID: int = 888563799701991435
 MESSAGE_ID: int = 888770216480366632
@@ -90,23 +89,6 @@ class MembersCog:
             f"Description mise à jour\n>>> {message}",
             InteractionFlags.EPHEMERAL
         )
-
-    @Client.event
-    async def on_command_error(self, exc: Exception):
-        if not isinstance(exc, BotError):
-            return
-
-        if isinstance(exc, MemberAlreadyExists):
-            return (
-                f"Le membre `{exc.member_name}`"
-                f"est déjà enregistrée dans `{exc.original.member_type}`"
-            )
-
-        if isinstance(exc.original, MemberNotFound):
-            return (
-                f"Le membre `{exc.original.member_name}`"
-                f"n'est pas dans `{exc.original.member_type}`"
-            )
 
 
 setup = MembersCog

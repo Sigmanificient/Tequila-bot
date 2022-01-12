@@ -95,20 +95,6 @@ class DrinksCog:
             InteractionFlags.EPHEMERAL
         )
 
-    @Client.event
-    async def on_command_error(self, ctx: MessageContext, error: Exception):
-        if not isinstance(error, BotError):
-            return
-
-        if isinstance(error, DrinkNotFound):
-            await ctx.send(
-                f"La boisson {error.drink_name} n' existe pas !"
-            )
-
-        if isinstance(error, DrinkAlreadyExists):
-            await ctx.send(
-                f"La boisson {error.drink_name} est déjà enregistrée !"
-            )
 
 
 setup = DrinksCog
