@@ -122,5 +122,4 @@ class DrinksCog(commands.Cog):
             )
 
 
-def setup(client) -> NoReturn:
-    client.add_cog(DrinksCog(client))
+setup = DrinksCog

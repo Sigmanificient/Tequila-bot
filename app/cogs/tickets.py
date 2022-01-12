@@ -83,5 +83,4 @@ class TicketCog(commands.Cog):
         await self.pot.update()
 
 
-def setup(client) -> NoReturn:
-    client.add_cog(TicketCog(client))
+setup = TicketCog

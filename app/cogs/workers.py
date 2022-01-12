@@ -158,5 +158,4 @@ class WorkerCog(commands.Cog):
             await ctx.send("Vous êtes déjà dans la liste des employées actifs.")
 
 
-def setup(client) -> NoReturn:
-    client.add_cog(WorkerCog(client))
+setup = WorkerCog

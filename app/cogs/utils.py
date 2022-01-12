@@ -107,5 +107,4 @@ class UtilsCog(commands.Cog):
             )
 
 
-def setup(client: Bot) -> NoReturn:
-    client.add_cog(UtilsCog(client))
+setup = UtilsCog
