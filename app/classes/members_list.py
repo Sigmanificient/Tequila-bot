@@ -1,8 +1,8 @@
-import discord
+from discord import Embed
 
+from app.classes.abc.message_manager import MessageManager
 from app.exceptions import MemberAlreadyExists, MemberNotFound
 from app.utils import word_capitalize
-from app.classes.abc.message_manager import MessageManager
 
 
 class MemberList(MessageManager):
@@ -18,7 +18,7 @@ class MemberList(MessageManager):
 
     async def update(self):
         await self.message.edit(
-            embed=discord.Embed(
+            embed=Embed(
                 description=get_embed_description()
             ).add_field(
                 name='__Adhérents__:',

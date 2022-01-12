@@ -1,8 +1,8 @@
-import discord
+from pincer.objects import Embed
 
+from app.classes.abc.message_manager import MessageManager
 from app.exceptions import DrinkAlreadyExists, DrinkNotFound
 from app.utils import word_capitalize, get_int
-from app.classes.abc.message_manager import MessageManager
 
 
 class DrinkList(MessageManager):
@@ -12,7 +12,7 @@ class DrinkList(MessageManager):
         self.drink_list = parse_from_message(message.embeds[0].description)
 
     async def update(self):
-        drink_list_embed = discord.Embed(
+        drink_list_embed = Embed(
             title="Liste des boissons",
             description=(
                 get_embed_description() + '\n'

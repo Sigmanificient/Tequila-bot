@@ -1,6 +1,7 @@
 import json
 import time
-import discord
+from pincer import PincerError
+from pincer.objects import Embed
 
 from app.classes.abc.message_manager import MessageManager
 from app.exceptions import EmployeeFound, EmployeeNotFound
@@ -31,7 +32,7 @@ class WorkList(MessageManager):
         )
 
     async def update(self):
-        update_embed = discord.Embed(
+        update_embed = Embed(
             title="Travail",
             description=get_embed_description()
         ).add_field(
@@ -57,7 +58,7 @@ class WorkList(MessageManager):
                 content='',
                 embed=update_embed
             )
-        except discord.errors.NotFound:
+        except PincerError:
             await self.regenerate(update_embed)
 
         print("generating backup...", end='')
