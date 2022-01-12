@@ -1,17 +1,14 @@
-from pincer import command, Client
-from pincer.objects import Embed, MessageContext
+import psutil
+from pincer import command
+from pincer.objects import Embed
 
 from app.bot import Bot
-from typing import NoReturn, Optional
-
-import psutil
-
 
 SALARIED_ROLE_ID: int = 888527962935296091
 PDG_ROLE_ID: int = 888527789794422784
 
 
-class UtilsCog(commands.Cog):
+class UtilsCog:
     """A simple commands cog template."""
 
     def __init__(self, client: Bot):

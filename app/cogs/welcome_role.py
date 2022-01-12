@@ -31,5 +31,4 @@ class WorkerRole(commands.Cog):
             await self.channel.send(f"{after.mention}")
 
 
-def setup(client: Bot):
-    client.add_cog(WorkerRole(client))
+setup = WorkerRole

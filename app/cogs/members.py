@@ -1,13 +1,11 @@
-from typing import NoReturn, Optional
+from typing import Optional
 
 from pincer import Client, command
-from pincer.objects import TextChannel, MessageContext, InteractionFlags
-
+from pincer.objects import TextChannel, InteractionFlags
 
 from app.bot import Bot
 from app.classes.members_list import MemberList
 from app.exceptions import MemberAlreadyExists, MemberNotFound, BotError
-from app.utils import SALARIED_ROLE_ID, PDG_ROLE_ID
 
 CHANNEL_ID: int = 888563799701991435
 MESSAGE_ID: int = 888770216480366632
