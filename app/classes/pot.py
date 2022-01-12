@@ -1,4 +1,4 @@
-import discord
+from discord import Embed
 
 from app.classes.abc.message_manager import MessageManager
 from app.utils import get_int
@@ -11,17 +11,15 @@ class Pot(MessageManager):
         self.pot = parse_from_message(message.embeds[0].description)
 
     async def update(self):
-        drink_list_embed = discord.Embed(
-            title="Cagnotte",
-            description=(
-                    get_embed_description()
-                    + f'\n\n**Total:** `${self.pot:,}`'
-            )
-        )
-
         await self.pot_message.edit(
             content='',
-            embed=drink_list_embed
+            embed=Embed(
+                title="Cagnotte",
+                description=(
+                    get_embed_description()
+                    + f'\n\n**Total:** `${self.pot:,}`'
+                )
+            )
         )
 
     async def add(self, amount):
